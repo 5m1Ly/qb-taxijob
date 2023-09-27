@@ -5,12 +5,12 @@ Config = Config or {}
 --------------
 
 Config.NotifyType = 'qb'                    -- notification type: 'qb' for qb-core standard notifications, 'okok' for okokNotify notifications
-
 Config.UseTarget = GetConvar('UseTarget', 'false') == 'true' -- set this to false if you want to use distance checks
-
 Config.DefaultTextLocation = "left"         -- Set to either "left", "right" or "top"
 
-Config.mzskills = true                      -- Set to 'false' if you do not wish to use mz-skills XP integration
+-- todo: change back to true
+Config.mzskills = false                      -- Set to 'false' if you do not wish to use mz-skills XP integration
+
 -- if Config.mzskills = true, then the following parameters apply:
 Config.DriverXPlow = 7                      -- Lowest possible XP given from successful NPC drop.
 Config.DriverXPhigh = 13                     -- Highest possible XP given from successful NPC drop.
@@ -19,49 +19,40 @@ Config.Meter = {
     ["defaultPrice"] = 200.00  -- dit maal bedrag wordt gedeeld door 2 dus als je 100 wilt als prijs moet je hier 200 instellen!!
 }
 
---Rare item drop parameters
+-- Rare item drop parameters
 Config.rareitem = 'cryptostick'             -- Rare item received by player
 Config.rarechance = 0                      -- Percentage chance of additional player drop upon completion of client taxi mission (set to 0 to disable)
 
---if Config.mzskills = true, then the following bonus payment parameters apply:
+-- if Config.mzskills = true, then the following bonus payment parameters apply:
 ------------------
 -- BONUS PAYMENT--
 ------------------
-Config.BonusChance = 20                    -- Percentage chance that the client pays the driver a bonus (to disable set to 0).
---Level 1
-Config.Level1Low = 1                        -- Lowest level 1 "Besturen" XP bonus awarded.
-Config.Level1High = 5                       -- Highest level 1 "Besturen" XP bonus awarded.
---Level 2
-Config.Level2Low = 3                        -- Lowest level 2 "Besturen" XP bonus awarded.
-Config.Level2High = 8                       -- Highest level 2 "Besturen" XP bonus awarded.
---Level 3
-Config.Level3Low = 5                        -- Lowest level 3 "Besturen" XP bonus awarded.
-Config.Level3High = 12                      -- Highest level 3 "Besturen" XP bonus awarded.
---Level 4
-Config.Level4Low = 8                        -- Lowest level 4 "Besturen" XP bonus awarded.
-Config.Level4High = 16                      -- Highest level 4 "Besturen" XP bonus awarded.
---Level 5
-Config.Level5Low = 10                       -- Lowest level 5 "Besturen" XP bonus awarded.
-Config.Level5High = 18                      -- Highest level 5 "Besturen" XP bonus awarded.
---Level 6
-Config.Level6Low = 13                       -- Lowest level 6 "Besturen" XP bonus awarded.
-Config.Level6High = 22                      -- Highest level 6 "Besturen" XP bonus awarded.
---Level 7
-Config.Level7Low = 15                       -- Lowest level 7 "Besturen" XP bonus awarded.
-Config.Level7High = 26                      -- Highest level 7 "Besturen" XP bonus awarded.
---Level 8
-Config.Level8Low = 18                       -- Lowest level 8 "Besturen" XP bonus awarded.
-Config.Level8High = 30                      -- Highest level 8 "Besturen" XP bonus awarded.
-
-Config.AllowedVehicles = {
-    [1] = {model = "taxi1", label = Lang:t("info.taxi_label_1")},
-    [2] = {model = "taxi2", label = Lang:t("info.taxi_label_2")},
-    [3] = {model = "taxi3", label = Lang:t("info.taxi_label_3")},
-    [4] = {model = "taxi4", label = Lang:t("info.taxi_label_3")},
-    [5] = {model = "taxi5", label = Lang:t("info.taxi_label_3")},
+Config.bonus = {
+    chance = 20,                    -- Percentage chance that the client pays the driver a bonus (to disable set to 0).
+    levels = {
+        { low = 1, high = 5, experiance = 0 },
+        { low = 3, high = 8, experiance = 200 },
+        { low = 5, high = 12, experiance = 400 },
+        { low = 8, high = 16, experiance = 800 },
+        { low = 10, high = 18, experiance = 1600 },
+        { low = 13, high = 22, experiance = 3200 },
+        { low = 15, high = 26, experiance = 6400 },
+        { low = 18, high = 30, experiance = 12800 }
+    },
+    messages = {
+        'Beste service die ik heb gehad, neem mijn geld!',
+        'Je zou de hele dag weg kunnen komen van de politie door zo te rijden!',
+        'Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!',
+        'Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...',
+        'Lekker gereden, bedankt! Hier is een kleine tip...'
+    }
 }
 
-Config.BossMenu = nil --vector3(903.32, -170.55, 74.0)
+Config.AllowedVehicles = {
+    [1] = { model = "taxi", label = "taxi" },
+}
+
+Config.BossMenu = vector3(903.32, -170.55, 74.0)
 
 Config.Location = vector4(909.5, -177.35, 74.22, 238.5)
 
@@ -620,15 +611,22 @@ Config.NpcSkins = {
 }
 
 Config.CabSpawns = {
-    vector4(899.0837, -180.4414, 73.4115, 238.7553),
-    vector4(897.1274, -183.3882, 73.3531, 238.4949),
-    vector4(903.4929, -191.7166, 73.3883, 60.5255),
-    vector4(904.9221, -188.7516, 73.4204, 60.5921),
-    vector4(906.9083, -186.0502, 73.6249, 58.2671),
-    vector4(908.7374, -183.2168, 73.7542, 57.1579),
-    vector4(911.3865, -163.0307, 73.9763, 194.4093),
-    vector4(913.5932, -159.4309, 74.3888, 193.9838),
-    vector4(916.0979, -170.6549, 74.0125, 100.604),
-    vector4(918.3217, -167.1944, 74.2036, 101.5165),
-    vector4(920.6716, -163.4763, 74.4108, 96.2972)
+    -- left front
+    vector4(908.61, -183.26, 73.77, 57.62),
+    vector4(906.82, -186.06, 73.64, 58.57),
+    vector4(905.22, -188.93, 73.45, 59.83),
+    vector4(903.58, -191.52, 73.41, 57.3),
+
+    -- left back
+    vector4(897.6, -183.4, 73.38, 236.88),
+    vector4(899.27, -180.37, 73.44, 238.41),
+
+    -- right back
+    vector4(911.43, -163.61, 73.96, 191.44),
+    vector4(913.77, -159.84, 74.38, 190.57),
+
+    -- right front
+    vector4(920.23, -163.82, 74.42, 98.04),
+    vector4(918.3, -167.28, 74.21, 103.19),
+    vector4(916.28, -170.96, 74.04, 102.68)
 }

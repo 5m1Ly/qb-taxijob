@@ -115,24 +115,42 @@ function openCoupon(coupon) {
     coupon.gold = coupon.total > 4;
 
     const couponBox = document.querySelector('.coupon-box');
+
     const images = document.querySelector('.coupon-img');
 
     images.children[0].style.display = coupon.gold ? 'none' : 'block';
     images.children[1].style.display = coupon.gold ? 'block' : 'none';
 
     couponBox.style.opacity = 1;
+    document.querySelectorAll(".container")[1].style.display = 'block';
 
     createTickets(coupon);
 }
 
 function closeCoupon() {
-    const coupon = document.querySelector('.coupon-box');
-    coupon.style.opacity = 0;
+    const couponBox = document.querySelector('.coupon-box');
+    couponBox.style.opacity = 0;
     canUseTicket = true;
 }
 
-openCoupon({
-    delivery: 2,
-    transport: 2,
-    used: 0
+$(document).ready(function () {
+    const coupon = document.querySelectorAll(".container")[1];
+    $(coupon).hide();
+    window.addEventListener("message", (event) => {
+        const eventData = event.data;
+        switch (eventData.action) {
+            case "open-coupon":
+                openCoupon({
+                    delivery: 2,
+                    transport: 2,
+                    used: 0
+                });
+                break;
+            case "close-coupon":
+                closeCoupon();
+                break;
+            default:
+                break;
+        }
+    });
 });

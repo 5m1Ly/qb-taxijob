@@ -16,7 +16,8 @@
         ></script>
         <link rel="stylesheet" href="./css/reset.css" />
         <link rel="stylesheet" href="./css/meter.css" />
-        <title>Taxi Meter</title>
+        <link rel="stylesheet" href="./css/coupon.css" />
+        <title>Taxi</title>
     </head>
     <body>
         <div class="container">
@@ -36,6 +37,25 @@
                 </div>
             </div>
         </div>
+        <div class="container">
+            <div class="coupon-box">
+                <div class="coupon">
+                    <div class="coupon-img">
+                        <img
+                            src="./img/downtown_cab_co_coupon.png"
+                            alt="coupon"
+                        />
+                        <img
+                            src="./img/downtown_cab_co_coupon_gold.png"
+                            alt="coupon gold"
+                        />
+                    </div>
+                    <div class="coupon-text"></div>
+                </div>
+                <div class="coupon-tickets" id="tickets"></div>
+            </div>
+        </div>
+        <script src="./js/coupon.js"></script>
         <script src="./js/meter.js"></script>
     </body>
 </html>

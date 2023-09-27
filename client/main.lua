@@ -61,6 +61,25 @@ AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
 end)
 
 -- Functions
+local function ItsJustTheTipBaby()
+    local found = false
+    for level, info in next, Config.bonus.levels do
+        exports["mz-skills"]:CheckSkill("Besturen", info.experiance, function(hasSkillLevel)
+            if not hasSkillLevel then return end
+            found = true
+            TriggerServerEvent('qb-taxijob:server:its-just-the-tip-baby', level)
+            Wait(1500)
+            local message = Config.bonus.messages[math.random(1, #Config.BonusMessages)]
+            if Config.NotifyType == 'qb' then
+                QBCore.Functions.Notify(message, "info", 3500)
+            elseif Config.NotifyType == "okok" then
+                exports['okokNotify']:Alert("TIP", message, 3500, "info")
+            end
+        end)
+        if found then break end
+    end
+end
+
 
 local function ResetNpcTask()
     NpcData = {
@@ -182,121 +201,9 @@ local function GetDeliveryLocation()
                                 end
                                 exports["mz-skills"]:UpdateSkill("Besturen", chance)
                                 Wait(1000)
-                                if Config.BonusChance >= math.random(1, 100) then
+                                if Config.bonus.chance >= math.random(1, 100) then
                                     --Skill check call for config.menu prices on items
-                                    exports["mz-skills"]:CheckSkill("Besturen", 12800, function(hasskill)
-                                        if hasskill then
-                                            lvl8 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 6400, function(hasskill)
-                                        if hasskill then
-                                            lvl7 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 3200, function(hasskill)
-                                        if hasskill then
-                                            lvl6 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 1600, function(hasskill)
-                                        if hasskill then
-                                            lvl5 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 800, function(hasskill)
-                                        if hasskill then
-                                            lvl4 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 400, function(hasskill)
-                                        if hasskill then
-                                            lvl3 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 200, function(hasskill)
-                                        if hasskill then
-                                            lvl2 = true
-                                        end
-                                    end)
-                                    exports["mz-skills"]:CheckSkill("Besturen", 0, function(hasskill)
-                                        if hasskill then
-                                            lvl1 = true
-                                        end
-                                    end)
-                                    if lvl8 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel8')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Beste service die ik heb gehad, neem mijn geld!', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", "Beste service die ik heb gehad, neem mijn geld!", 3500, "info")
-                                        end
-                                        lvl8 = false
-                                    elseif lvl7 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel7')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Je zou de hele dag weg kunnen komen van de politie door zo te rijden!', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Je zou de hele dag weg kunnen komen van de politie door zo te rijden!', 3500, "info")
-                                        end
-                                        lvl7 = false
-                                    elseif lvl6 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel6')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', 3500, "info")
-                                        end
-                                        lvl6 = false
-                                    elseif lvl5 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel5')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', 3500, "info")
-                                        end
-                                        lvl5 = false
-                                    elseif lvl4 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel4')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', 3500, "info")
-                                        end
-                                        lvl4 = false
-                                    elseif lvl3 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel3')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', 3500, "info")
-                                        end
-                                        lvl3 = false
-                                    elseif lvl2 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel2')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Lekker gereden, bedankt! Hier is een kleine tip...', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Lekker gereden, bedankt! Hier is een kleine tip...', 3500, "info")
-                                        end
-                                        lvl2 = false
-                                    elseif lvl1 == true then
-                                        TriggerServerEvent('qb-taxijob:client:NPCBonusLevel1')
-                                        Wait(1500)
-                                        if Config.NotifyType == 'qb' then
-                                            QBCore.Functions.Notify('Lekker gereden, bedankt! Hier is een kleine tip...', "info", 3500)
-                                        elseif Config.NotifyType == "okok" then
-                                            exports['okokNotify']:Alert("TIP", 'Lekker gereden, bedankt! Hier is een kleine tip...', 3500, "info")
-                                        end
-                                        lvl1 = false
-                                    end
+                                    ItsJustTheTipBaby()
                                 end
                             end
                             local RemovePed = function(p)
@@ -342,21 +249,15 @@ local function IsSpawnPointClear(coords, maxDistance) -- Check the spawn point t
 	return #GetVehiclesInArea(coords, maxDistance) == 0
 end
 
-local function getVehicleSpawnPoint()
-    local near = nil
-	local distance = 10000
-	for k, v in pairs(Config.CabSpawns) do
-        if IsSpawnPointClear(vector3(v.x, v.y, v.z), 2.5) then
-            local ped = PlayerPedId()
-            local pos = GetEntityCoords(ped)
-            local cur_distance = #(pos - vector3(v.x, v.y, v.z))
-            if cur_distance < distance then
-                distance = cur_distance
-                near = k
-            end
-        end
+local function getVehicleSpawnPoint(i)
+    local i = i or 1
+    if i > #Config.CabSpawns then return nil end
+    local current = math.random(1, #Config.CabSpawns)
+    local spawn = Config.CabSpawns[current]
+    if not IsSpawnPointClear(spawn, 2.5) then
+        return getVehicleSpawnPoint(i + 1)
     end
-	return near
+	return current
 end
 
 local function calculateFareAmount()
@@ -424,15 +325,16 @@ end
 RegisterNetEvent("qb-taxi:client:TakeVehicle", function(data)
     local SpawnPoint = getVehicleSpawnPoint()
     if SpawnPoint then
-        local coords = vector3(Config.CabSpawns[SpawnPoint].x,Config.CabSpawns[SpawnPoint].y,Config.CabSpawns[SpawnPoint].z)
+        local spawn = Config.CabSpawns[SpawnPoint]
+        local coords = vector3(spawn.x, spawn.y, spawn.z)
         local CanSpawn = IsSpawnPointClear(coords, 2.0)
         if CanSpawn then
             QBCore.Functions.TriggerCallback('QBCore:Server:SpawnVehicle', function(netId)
                 local veh = NetToVeh(netId)
-                SetVehicleNumberPlateText(veh, "T-Laagland")
+                SetVehicleNumberPlateText(veh, "TAXI"..tostring(math.random(1000, 9999)))
                 exports['ps-fuel']:SetFuel(veh, 100.0)
                 closeMenuFull()
-                SetEntityHeading(veh, Config.CabSpawns[SpawnPoint].w)
+                SetEntityHeading(veh, spawn.w)
                 TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                 TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
                 SetVehicleEngineOn(veh, true, true)
@@ -900,121 +802,8 @@ function dropNpcPoly()
                         end
                         exports["mz-skills"]:UpdateSkill("Besturen", chance)
                         Wait(1000)
-                        if Config.BonusChance >= math.random(1, 100) then
-                            --Skill check call for config.menu prices on items
-                            exports["mz-skills"]:CheckSkill("Besturen", 12800, function(hasskill)
-                                if hasskill then
-                                    lvl8 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 6400, function(hasskill)
-                                if hasskill then
-                                    lvl7 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 3200, function(hasskill)
-                                if hasskill then
-                                    lvl6 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 1600, function(hasskill)
-                                if hasskill then
-                                    lvl5 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 800, function(hasskill)
-                                if hasskill then
-                                    lvl4 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 400, function(hasskill)
-                                if hasskill then
-                                    lvl3 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 200, function(hasskill)
-                                if hasskill then
-                                    lvl2 = true
-                                end
-                            end)
-                            exports["mz-skills"]:CheckSkill("Besturen", 0, function(hasskill)
-                                if hasskill then
-                                    lvl1 = true
-                                end
-                            end)
-                            if lvl8 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel8')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Beste service die ik heb gehad, neem mijn geld!', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", "Beste service die ik heb gehad, neem mijn geld!", 3500, "info")
-                                end
-                                lvl8 = false
-                            elseif lvl7 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel7')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Je zou de hele dag weg kunnen komen van de politie door zo te rijden!', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Je zou de hele dag weg kunnen komen van de politie door zo te rijden!', 3500, "info")
-                                end
-                                lvl7 = false
-                            elseif lvl6 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel6')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', 3500, "info")
-                                end
-                                lvl6 = false
-                            elseif lvl5 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel5')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Hé, mag ik je nummer? Je hebt me hier snel slim gebracht!', 3500, "info")
-                                end
-                                lvl5 = false
-                            elseif lvl4 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel4')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', 3500, "info")
-                                end
-                                lvl4 = false
-                            elseif lvl3 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel3')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Hé, dat waardeer ik, dankjewel! Neem iets extra\'s alstublieft...', 3500, "info")
-                                end
-                                lvl3 = false
-                            elseif lvl2 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel2')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Lekker gereden, bedankt! Hier is een kleine tip...', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Lekker gereden, bedankt! Hier is een kleine tip...', 3500, "info")
-                                end
-                                lvl2 = false
-                            elseif lvl1 == true then
-                                TriggerServerEvent('qb-taxijob:client:NPCBonusLevel1')
-                                Wait(1500)
-                                if Config.NotifyType == 'qb' then
-                                    QBCore.Functions.Notify('Lekker gereden, bedankt! Hier is een kleine tip...', "info", 3500)
-                                elseif Config.NotifyType == "okok" then
-                                    exports['okokNotify']:Alert("TIP", 'Lekker gereden, bedankt! Hier is een kleine tip...', 3500, "info")
-                                end
-                                lvl1 = false
-                            end
+                        if Config.bonus.chance >= math.random(1, 100) then
+                            ItsJustTheTipBaby()
                         end
                     end
                     local RemovePed = function(p)
@@ -1055,6 +844,7 @@ function setupCabParkingLocation()
     end)
 
 end
+
 -- thread to handle vehicle parking
 CreateThread(function()
     while true do
@@ -1082,7 +872,8 @@ CreateThread(function()
         Wait(1)
     end
 end)
---]]
+]]
+
 -- switched boss menu from qb-bossmenu to taxijob
 CreateThread(function()
     while true do
