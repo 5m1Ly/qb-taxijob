@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+:root {
+    --meter-size-width: 45vh;
+    --meter-size-height: 22.3vh;
+}
+
+.container {
+    height: 100vh;
+}
+
+.coupon-box {
+    width: 42%;
+    height: 30%;
+
+    position: absolute;
+    top: 60%;
+    left: 5%;
+    rotate: 350deg;
+
+    display: flex;
+    flex-direction: row;
+
+    font-family: 'Lato', sans-serif;
+}
+
+.coupon {
+    width: 80%;
+    height: calc(100% - 4px);
+
+    border-top: 2px solid rgb(49, 46, 32);
+    border-left: 2px solid rgb(49, 46, 32);
+    border-bottom: 2px solid rgb(49, 46, 32);
+
+    border-right: 2px dashed rgb(49, 46, 32);
+
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    background: rgb(254, 184, 28);
+}
+
+.coupon-img {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.coupon-img>img {
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.coupon-tickets {
+    width: 20%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-flow: column wrap;
+}
+
+.ticket {
+    width: 100%;
+    background-color: #feb81c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-variant: small-caps;
+    font-weight: 600;
+}
+
+.ticket:hover {
+    background-color: #e0a118;
+}
+
+.used {
+    position: relative;
+    animation: ease-out used 2s;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+
+.in-use {
+    opacity: 0;
+}
+
+@keyframes used {
+    0% {
+        rotate: -1deg
+    }
+
+    5% {
+        rotate: 1deg
+    }
+
+    10% {
+        rotate: -1deg
+    }
+
+    20% {
+        top: 0px;
+        left: 0px;
+        rotate: 1deg
+    }
+
+    50% {
+        top: -40px;
+        left: 20px;
+        rotate: 1deg
+    }
+
+    100% {
+        top: -40px;
+        left: 20px;
+        rotate: -3deg;
+        opacity: 0;
+    }
+}
+
+.single-ticket {
+    flex-grow: 1;
+    border-top: 2px solid rgb(49, 46, 32);
+    border-right: 2px solid rgb(49, 46, 32);
+    border-bottom: 2px solid rgb(49, 46, 32);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.first-ticket {
+    flex-grow: 1;
+    border-top: 2px solid rgb(49, 46, 32);
+    border-right: 2px solid rgb(49, 46, 32);
+    border-bottom: 2px dashed rgb(49, 46, 32);
+    border-top-right-radius: 5px;
+}
+
+.middle-ticket {
+    flex-grow: 1;
+    border-right: 2px solid rgb(49, 46, 32);
+    border-bottom: 2px dashed rgb(49, 46, 32);
+}
+
+.last-ticket {
+    flex-grow: 1;
+    border-right: 2px solid rgb(49, 46, 32);
+    border-bottom: 2px solid rgb(49, 46, 32);
+    border-bottom-right-radius: 5px;
+}
