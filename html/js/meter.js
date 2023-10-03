@@ -63,7 +63,7 @@ $(document).ready(function () {
         switch (eventData.action) {
             case "openMeter":
                 if (eventData.toggle) {
-                    openMeter(meter, eventData.meterData);
+                    openMeter(meter, eventData.data);
                 } else {
                     closeMeter();
                 }
@@ -72,7 +72,7 @@ $(document).ready(function () {
                 meterToggle();
                 break;
             case "updateMeter":
-                updateMeter(eventData.meterData);
+                updateMeter(eventData.data);
                 break;
             case "resetMeter":
                 resetMeter();

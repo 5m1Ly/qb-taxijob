@@ -5,31 +5,6 @@ description 'QB-TaxiJob'
 version '1.0.0'
 
 ui_page 'html/index.html'
-
-shared_scripts {
-	'@qb-core/shared/locale.lua',
-	'locales/en.lua', -- Change to the language you want to use
-	'config.lua',
-}
-
-dependencies {
-	'qb-core',
-	'PolyZone',
-}
-
-client_scripts {
-	'@PolyZone/client.lua',
-	'@PolyZone/BoxZone.lua',
-	'@PolyZone/ComboZone.lua',
-	'client/main.lua',
-    'client/coupon.lua'
-}
-
-server_scripts {
-    'server/main.lua',
-    'server/coupon.lua'
-}
-
 files {
     'html/index.html',
 	'html/js/coupon.js',
@@ -40,6 +15,32 @@ files {
 	'html/img/g5-meter.png',
 	'html/img/downtown_cab_co_coupon.png',
 	'html/img/downtown_cab_co_coupon_gold.png'
+}
+
+shared_scripts {
+	'@qb-core/shared/locale.lua',
+	'locales/en.lua', -- Change to the language you want to use
+	'config/*.lua',
+}
+
+client_scripts {
+	'@PolyZone/client.lua',
+	'@PolyZone/BoxZone.lua',
+	'@PolyZone/ComboZone.lua',
+    'client/core.lua',
+    'client/functions/*.lua',
+    'client/services/*.lua',
+	'client/main.lua',
+	'client/threads.lua',
+}
+
+server_scripts {
+    'server/*.lua',
+}
+
+dependencies {
+	'qb-core',
+	'PolyZone',
 }
 
 lua54 'yes'

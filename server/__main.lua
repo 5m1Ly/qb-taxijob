@@ -1,9 +1,9 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local function NearTaxi(src)
+local function NearDropoffLocation(src)
     local ped = GetPlayerPed(src)
     local coords = GetEntityCoords(ped)
-    for _, v in pairs(Config.NPCLocations.DeliverLocations) do
+    for _, v in pairs(Config.missions.dropoff) do
         local dist = #(coords - vector3(v.x, v.y, v.z))
         if dist < 20 then
             return true
@@ -14,7 +14,7 @@ end
 local function NoExploit(src, cb, ...)
     local player = QBCore.Functions.GetPlayer(src)
     if player.PlayerData.job.name == "taxi" then
-        if NearTaxi(src) then
+        if NearDropoffLocation(src) then
             cb(src, player, ...)
         else
             DropPlayer(src, 'Attempting To Exploit')
