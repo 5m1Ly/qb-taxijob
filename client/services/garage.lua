@@ -38,3 +38,12 @@ function Taxi.Services.Garage.GetSpawnPoint(i)
     end
 	return current ~= nil and Config.garage.parking[current] or nil
 end
+
+function Taxi.Services.Garage.SpawnVehicle(model)
+    local spawn = Taxi.Services.Garage.GetSpawnPoint()
+    if spawn and Taxi.Methods.IsSpawnPointClear(vector3(spawn.x, spawn.y, spawn.z), 2.0) then
+        Taxi.Methods.SpawnVehicle(model, spawn)
+    else
+        Taxi.Error(Lang:t("error.no_spawn_point"))
+    end
+end

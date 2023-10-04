@@ -47,8 +47,8 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(data)
     Taxi.player.job = data
 end)
 
-
 local function Notify(type, message, duration)
+    print(("[taxi:%s] %s"):format(type, message))
     duration = duration or 5000
     if Config.NotifyType == 'qb' then
         QBCore.Functions.Notify(message, type, duration)
@@ -57,19 +57,16 @@ local function Notify(type, message, duration)
     end
 end
 
--- Taxi.Info()
 function Taxi.Info(message, duration)
     duration = duration or 5000
     Notify(Config.NotifyType == 'qb' and 'primary' or 'info', message, duration)
 end
 
--- Taxi.Error()
 function Taxi.Error(message, duration)
     duration = duration or 5000
     Notify('error', message, duration)
 end
 
--- Taxi.Success()
 function Taxi.Success(message, duration)
     duration = duration or 5000
     Notify('success', message, duration)

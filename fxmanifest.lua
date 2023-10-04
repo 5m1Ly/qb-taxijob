@@ -27,10 +27,13 @@ client_scripts {
 	'@PolyZone/client.lua',
 	'@PolyZone/BoxZone.lua',
 	'@PolyZone/ComboZone.lua',
-    'client/core.lua',
+
+    'client/__main.lua',
+
     'client/functions/*.lua',
     'client/services/*.lua',
-	'client/main.lua',
+
+    'client/events.lua',
 	'client/threads.lua',
 }
 
