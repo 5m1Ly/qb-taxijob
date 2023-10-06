@@ -1,8 +1,8 @@
 function Taxi.Methods.CreateBoxZone(location)
     return BoxZone:Create(
         vector3(location.xyz),
-        22,
-        4.2,
+        20,
+        10,
         {
             heading = location.w,
             debugPoly = not Config.production,

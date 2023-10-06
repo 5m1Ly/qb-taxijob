@@ -2,30 +2,38 @@ Taxi.Services.Meter = {}
 
 -- methods
 function Taxi.Services.Meter.Reset()
-    Taxi.meter.data = {
-        fareAmount = 6,
-        currentFare = 0,
-        distanceTraveled = 0,
-    }
+    Taxi.meter.data.fareAmount = 6
+    Taxi.meter.data.currentFare = 0
+    Taxi.meter.data.distanceTraveled = 0
+    Taxi.meter.data.defaultPrice = Config.meter.defaultPrice
+    Taxi.Services.Meter.Update()
+end
+
+function Taxi.Services.Meter.Open()
+    Taxi.Debug("opening taxi meter")
+    Taxi.Services.Meter.Update()
+    Taxi.Methods.TriggerNuiEvent("meter:open")
+    Taxi.meter.open = true
+end
+
+function Taxi.Services.Meter.Close()
+    Taxi.Debug("opening taxi meter")
+    Taxi.Methods.TriggerNuiEvent("meter:close")
+    Taxi.meter.open = false
+end
+
+function Taxi.Services.Meter.Update()
+    Taxi.Methods.TriggerNuiEvent("meter:update", Taxi.meter.data)
 end
 
 function Taxi.Services.Meter.Toggle()
     local ped = PlayerPedId()
     if IsPedInAnyVehicle(ped, false) then
         if Taxi.Methods.IsPlayerInsideTaxi() then
-            if not Taxi.meter.open and Taxi.Methods.IsPlayerDriver() then
-                SendNUIMessage({
-                    action = "openMeter",
-                    toggle = true,
-                    data = Config.meter
-                })
-                Taxi.meter.open = true
+            if not Taxi.meter.open and Taxi.Methods.IsPlayerDriving() then
+                Taxi.Services.Meter.Open()
             else
-                SendNUIMessage({
-                    action = "openMeter",
-                    toggle = false
-                })
-                Taxi.meter.open = false
+                Taxi.Services.Meter.Close()
             end
         else
             Taxi.Error(Lang:t("error.missing_meter"))
@@ -38,7 +46,8 @@ end
 function Taxi.Services.Meter.Enable()
     if Taxi.meter.open then
         SendNUIMessage({
-            action = "toggleMeter"
+            action = "toggleMeter",
+            data = Taxi.meter.data
         })
     else
         Taxi.Error(Lang:t("error.missing_meter"))
@@ -61,16 +70,9 @@ function Taxi.Services.Meter.CalculateFareAmount()
             local distance = #(Taxi.meter.start - pos)
             Taxi.meter.start = pos
             Taxi.meter.data.distanceTraveled += distance
-
-            print("distance", distance)
-            print("traveled", Taxi.meter.data['distanceTraveled'])
             local fareAmount = (Taxi.meter.data.distanceTraveled / 100.00) * Taxi.meter.data.fareAmount
             Taxi.meter.data.currentFare = math.ceil(fareAmount)
-
-            SendNUIMessage({
-                action = "updateMeter",
-                data = Taxi.meter.data
-            })
+            Taxi.Services.Meter.Update()
         end
     end
 end
@@ -100,11 +102,7 @@ CreateThread(function()
     while true do
         if not IsPedInAnyVehicle(PlayerPedId(), false) then
             if Taxi.meter.open then
-                SendNUIMessage({
-                    action = "openMeter",
-                    toggle = false
-                })
-                Taxi.meter.open = false
+                Taxi.Services.Meter.Close()
             end
         end
         Wait(200)

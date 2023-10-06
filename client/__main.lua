@@ -14,6 +14,7 @@ Taxi = {
             fareAmount = 6,
             currentFare = 0,
             distanceTraveled = 0,
+            defaultPrice = Config.meter.defaultPrice
         }
     },
     player = {
@@ -32,11 +33,15 @@ Taxi = {
             ped = nil
         },
         pickup = {
+            current = nil,
+            last = nil,
             zone = nil,
             arrived = false,
             done = false
         },
         dropoff = {
+            current = nil,
+            last = nil,
             zone = nil,
             arrived = false
         }
@@ -70,6 +75,11 @@ end
 function Taxi.Success(message, duration)
     duration = duration or 5000
     Notify('success', message, duration)
+end
+
+function Taxi.Debug(...)
+    if Config.production then return end
+    print(("[taxi:debug] %s"):format(table.concat({...}, " ")))
 end
 
 Taxi.Methods = {}

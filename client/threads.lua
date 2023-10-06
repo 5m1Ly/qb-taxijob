@@ -1,13 +1,14 @@
 CreateThread(function()
-    local TaxiBlip = AddBlipForCoord(Config.garage.location.x, Config.garage.location.y, Config.garage.location.z)
-    SetBlipSprite (TaxiBlip, 198)
-    SetBlipDisplay(TaxiBlip, 4)
-    SetBlipScale  (TaxiBlip, 0.6)
-    SetBlipAsShortRange(TaxiBlip, true)
-    SetBlipColour(TaxiBlip, 5)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentSubstringPlayerName(Lang:t("info.blip_name"))
-    EndTextCommandSetBlipName(TaxiBlip)
+    Taxi.Methods.CreateBlip(
+        "Downtown Cab Co.",
+        198,
+        4,
+        0.6,
+        true,
+        Config.garage.location.x,
+        Config.garage.location.y,
+        Config.garage.location.z
+    )
 end)
 
 CreateThread(function()
@@ -30,7 +31,16 @@ CreateThread(function()
                     local vehDist = #(pos - vector3(garage.x, garage.y, garage.z))
                     if vehDist < 30 then
                         inRange = true
-                        DrawMarker(2, garage.x, garage.y, garage.z, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.3, 0.5, 0.2, 200, 0, 0, 222, false, false, false, true, false, false, false)
+                        local rgb = Config.colors.rgb
+                        DrawMarker(
+                            36, -- type
+                            garage.x, garage.y, garage.z, -- pos
+                            0.0, 0.0, 0.0, -- dir
+                            0.0, 0.0, 0.0, -- rot
+                            0.6, 1.0, 0.6, -- scale
+                            rgb[1], rgb[2], rgb[3], 200, -- color
+                            false, false, false, true, false, false, false
+                        )
                         if vehDist < 1.5 then
                             if Taxi.Methods.IsPlayerInsideTaxi() then
                                 Taxi.Methods.DrawText3D(garage.x, garage.y, garage.z + 0.3, Lang:t("info.vehicle_parking"))

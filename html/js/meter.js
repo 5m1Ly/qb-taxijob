@@ -1,83 +1,97 @@
-let meterStarted = false;
-
-const updateMeter = (meterData) => {
-    $("#total-price").html("€ " + meterData.currentFare.toFixed(2));
-    $("#total-distance").html(
-        //(meterData.distanceTraveled / 1700).toFixed(1) + " mi"
-        (meterData.distanceTraveled / 1000).toFixed(1) + " km"
-
-    );
-};
-
-const resetMeter = () => {
-    $("#total-price").html("€ 0.00");
-    $("#total-distance").html("0.0 km");
-};
-
-const toggleMeter = (enabled) => {
-    if (enabled) {
-        $(".toggle-meter-btn").html("<p>Started</p>");
-        $(".toggle-meter-btn p").css({ color: "rgb(51, 160, 37)" });
-    } else {
-        $(".toggle-meter-btn").html("<p>Stopped</p>");
-        $(".toggle-meter-btn p").css({ color: "rgb(231, 30, 37)" });
+class Meter {
+    constructor() {
+        this.started = false;
+        this.currentFare = 0;
+        this.distanceTraveled = 0;
+        this.defaultPrice = 0;
+        this.elements = {
+            meter: document.querySelectorAll(".container")[0],
+            totalPrice: $("#total-price"),
+            totalDistance: $("#total-distance"),
+            toggleMeterBtn: $(".toggle-meter-btn"),
+            toggleMeterBtnText: $(".toggle-meter-btn p"),
+        }
     }
-};
 
-const meterToggle = () => {
-    if (!meterStarted) {
-        $.post(
-            "https://qb-taxijob/enableMeter",
-            JSON.stringify({
-                enabled: true,
-            })
-        );
-        toggleMeter(true);
-        meterStarted = true;
-    } else {
-        $.post(
-            "https://qb-taxijob/enableMeter",
-            JSON.stringify({
-                enabled: false,
-            })
-        );
-        toggleMeter(false);
-        meterStarted = false;
+    setCurrentFare(fare) {
+        this.currentFare = fare;
     }
-};
 
-const openMeter = (meter, meterData) => {
-    $(meter).fadeIn(150);
-    $("#total-price-per-100m").html("€ " + Math.round(meterData.defaultPrice / 2.083));
-};
+    setDistanceTraveled(distance) {
+        this.distanceTraveled = distance;
+    }
 
-const closeMeter = () => {
-    $(".container").fadeOut(150);
-};
+    setDefaultPrice(price) {
+        this.defaultPrice = price;
+    }
+
+    update() {
+        this.elements.totalPrice.html("€ " + this.currentFare.toFixed(2));
+        this.elements.totalDistance.html(
+            (this.distanceTraveled / 1000).toFixed(1) + " km"
+        );
+    }
+
+    start() {
+        this.started = true;
+        this.elements.toggleMeterBtnText.html("Started");
+        this.elements.toggleMeterBtnText.css({ color: "rgb(51, 160, 37)" });
+    }
+
+    stop() {
+        this.started = false;
+        this.elements.toggleMeterBtnText.html("Stopped");
+        this.elements.toggleMeterBtnText.css({ color: "rgb(231, 30, 37)" });
+    }
+
+    toggleFare() {
+        this.started ? this.stop() : this.start();
+        $.post("https://qb-taxijob/enableMeter", JSON.stringify({
+            enabled: this.started,
+        }));
+    }
+
+    open() {
+        $(this.elements.meter).fadeIn(150);
+        $("#total-price-per-100m").html("€ " + Math.round(this.defaultPrice));
+    }
+
+    close() {
+        $(this.elements.meter).fadeOut(150);
+    }
+}
 
 $(document).ready(function () {
-    const meter = document.querySelectorAll(".container")[0];
-    $(meter).hide();
+
+    const meter = new Meter();
+    meter.close();
+
     window.addEventListener("message", (event) => {
-        const eventData = event.data;
-        switch (eventData.action) {
-            case "openMeter":
-                if (eventData.toggle) {
-                    openMeter(meter, eventData.data);
-                } else {
-                    closeMeter();
-                }
+
+        const name = event.data.name;
+        const data = event.data.data;
+
+        switch (name) {
+            case "meter:open":
+                meter.open();
                 break;
-            case "toggleMeter":
-                meterToggle();
+            case "meter:close":
+                meter.close();
                 break;
-            case "updateMeter":
-                updateMeter(eventData.data);
+            case "meter:toggle-fare":
+                meter.toggleFare();
                 break;
-            case "resetMeter":
-                resetMeter();
+            case "meter:update":
+                const { currentFare, distanceTraveled, defaultPrice } = data;
+
+                meter.setCurrentFare(currentFare);
+                meter.setDefaultPrice(defaultPrice);
+                meter.setDistanceTraveled(distanceTraveled);
+
+                meter.update();
                 break;
             default:
+                console.log("unregistered event name: " + name)
                 break;
         }
     });

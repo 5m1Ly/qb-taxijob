@@ -44,6 +44,8 @@ server_scripts {
 dependencies {
 	'qb-core',
 	'PolyZone',
+    'ps-fuel',
+    'mz-skills'
 }
 
 lua54 'yes'

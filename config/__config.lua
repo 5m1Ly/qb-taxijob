@@ -1,6 +1,10 @@
 Config = Config or {}
 
 Config.production = false                    -- Set to true to enable debuggers (should be false in production)
+Config.colors = {
+    hex = 0xFEB61CFF,
+    rgb = {254, 182, 28}
+}
 
 Config.NotifyType = 'qb'                    -- notification type: 'qb' for qb-core standard notifications, 'okok' for okokNotify notifications
 Config.UseTarget = GetConvar('UseTarget', 'false') == 'true' -- set this to false if you want to use distance checks
@@ -16,4 +20,3 @@ Config.rareitem = 'cryptostick'             -- Rare item received by player
 Config.rarechance = 0                      -- Percentage chance of additional player drop upon completion of client taxi mission (set to 0 to disable)
 
 Config.BossMenu = vector3(903.32, -170.55, 74.0)
-

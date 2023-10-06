@@ -1,0 +1,11 @@
+function Taxi.Methods.CreateBlip(name, sprite, display, scale, short_range, x, y, z)
+    local blip = AddBlipForCoord(x, y, z)
+    SetBlipSprite (blip, sprite)
+    SetBlipDisplay(blip, display)
+    SetBlipScale(blip, scale)
+    SetBlipAsShortRange(blip, short_range)
+    SetBlipColour(blip, Config.colors.hex)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentSubstringPlayerName(name)
+    EndTextCommandSetBlipName(blip)
+end
