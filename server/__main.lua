@@ -29,10 +29,14 @@ RegisterNetEvent('qb-taxi:server:NpcPay', function(payment)
         local randomAmount = math.random(1, 5)
         local r1, r2 = math.random(1, 5), math.random(1, 5)
         if randomAmount == r1 or randomAmount == r2 then
-            payment = payment + math.random(10, 20)
+            payment += math.random(10, 20)
         end
-        player.Functions.AddMoney('cash', payment)
-        if math.random(1, 100) == 1 then
+        local precent = payment / 100
+        local taxi_payment = precent * 10
+        local player_payment = precent * 90
+        exports['qb-management']:AddMoney("taxi", taxi_payment)
+        player.Functions.AddMoney('cash', player_payment)
+        if math.random(1, 5) == 1 then
             player.Functions.AddItem(Config.rareitem, 1, false)
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Config.rareitem], "add")
         end

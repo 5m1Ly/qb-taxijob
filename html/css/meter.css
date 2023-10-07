@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
 
 :root {
-    --meter-size-width: 45vh;
-    --meter-size-height: 22.3vh;
+    --meter-size-width: 32vh;
+    --meter-size-height: 16.3vh;
 }
 
 .container {
@@ -13,16 +13,16 @@
     position: absolute;
     top: 25vh;
     right: 1vh;
-    width: var(--meter-size-width);
-    height: var(--meter-size-height);
+    width: 32vh;
+    height: 16.3vh;
 }
 
 .g5-meter {
     position: absolute;
     top: 25vh;
     right: 1vh;
-    width: var(--meter-size-width);
-    height: var(--meter-size-height);
+    width: 32vh;
+    height: 16.3vh;
 }
 
 #total-price {
@@ -30,9 +30,9 @@
     font-family: 'Lato';
     font-weight: bold;
     letter-spacing: 0.1vh;
-    font-size: 4.1vh;
-    top: 4vh;
-    right: 8vh;
+    font-size: 3.1vh;
+    top: 3vh;
+    right: 5.8vh;
     float: right;
     position: absolute;
 }
@@ -41,10 +41,10 @@
     color: rgba(255, 255, 255, 0.75);
     font-family: 'Lato';
     font-weight: lighter;
-    font-size: 1.1vh;
+    font-size: 0.8vh;
     letter-spacing: 0.1vh;
-    top: 9vh;
-    right: 8vh;
+    top: 6.6vh;
+    right: 5.8vh;
     float: right;
     position: absolute;
 }
@@ -54,9 +54,9 @@
     font-family: 'Lato';
     font-weight: bold;
     letter-spacing: 0.1vh;
-    font-size: 4.1vh;
-    top: 11.5vh;
-    right: 8vh;
+    font-size: 2.7vh;
+    top: 8.5vh;
+    right: 5.8vh;
     float: right;
     position: absolute;
 }
@@ -65,10 +65,10 @@
     color: rgba(255, 255, 255, 0.75);
     font-family: 'Lato';
     font-weight: lighter;
-    font-size: 1.1vh;
+    font-size: 0.8vh;
     letter-spacing: 0.1vh;
-    top: 16.5vh;
-    right: 8vh;
+    top: 12vh;
+    right: 5.8vh;
     float: right;
     position: absolute;
 }
@@ -78,9 +78,9 @@
     font-family: 'Lato';
     font-weight: bold;
     letter-spacing: 0.1vh;
-    font-size: 4.1vh;
-    top: 11.5vh;
-    right: 25vh;
+    font-size: 2.7vh;
+    top: 8.5vh;
+    right: 18vh;
     float: right;
     position: absolute;
 }
@@ -89,29 +89,29 @@
     color: rgba(255, 255, 255, 0.75);
     font-family: 'Lato';
     font-weight: lighter;
-    font-size: 1.1vh;
+    font-size: 0.8vh;
     letter-spacing: 0.1vh;
-    top: 16.5vh;
-    right: 25vh;
+    top: 12vh;
+    right: 18vh;
     float: right;
     position: absolute;
 }
 
 .toggle-meter-btn {
     position: absolute;
-    height: 6vh;
-    width: 6.7vh;
+    height: 5vh;
+    width: 5.1vh;
     background: rgba(46, 46, 46, 0.534);
-    top: 4.15vh;
-    left: 3.8vh;
+    top: 2.65vh;
+    left: 2.55vh;
     border-radius: 0.8vh;
     transition: background 0.1s linear;
 }
 
-.toggle-meter-btn > p {
+.toggle-meter-btn>p {
     text-align: center;
-    line-height: 5.8vh;
-    font-size: 1.2vh;
+    line-height: 5vh;
+    font-size: 0.9vh;
     color: rgb(231, 30, 37);
     letter-spacing: 0.1vh;
     font-family: sans-serif;

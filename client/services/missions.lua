@@ -9,6 +9,7 @@ function Taxi.Services.Missions.GetDistance(x, y, z)
 end
 
 function Taxi.Services.Missions.SetRandomMissionPed(recursed)
+    Taxi.Debug("selecting random ped for mission")
     if not recursed and Taxi.mission.npc.current ~= nil then
         Taxi.mission.npc.last = Taxi.mission.npc.current
     end
@@ -22,6 +23,7 @@ function Taxi.Services.Missions.SetRandomMissionPed(recursed)
 end
 
 function Taxi.Services.Missions.SetRandomPickupLocation(recursed)
+    Taxi.Debug("selecting random pickup location for mission")
     recursed = not not recursed
     if not recursed and Taxi.mission.pickup.current ~= nil then
         Taxi.mission.pickup.last = Taxi.mission.pickup.current
@@ -30,22 +32,24 @@ function Taxi.Services.Missions.SetRandomPickupLocation(recursed)
     local vec = Config.missions.pickup[Taxi.mission.pickup.current]
     local pos = Taxi.Services.Missions.GetPlayerPos()
     if #(pos - vector3(vec.x, vec.y, vec.z)) <= 150 then
-        return Taxi.Services.Missions.NewPickupLocation(true)
+        return Taxi.Services.Missions.SetRandomPickupLocation(true)
     end
     if Taxi.mission.pickup.last ~= nil then
         if Taxi.mission.pickup.current == Taxi.mission.pickup.last then
-            return Taxi.Services.Missions.NewPickupLocation(true)
+            return Taxi.Services.Missions.SetRandomPickupLocation(true)
         end
         local last = Config.missions.pickup[Taxi.mission.pickup.last]
         local curr = Config.missions.pickup[Taxi.mission.pickup.current]
         if #(vector3(last.x, last.y, last.z) - vector3(curr.x, curr.y, curr.z)) <= 50 then
-            return Taxi.Services.Missions.NewPickupLocation(true)
+            return Taxi.Services.Missions.SetRandomPickupLocation(true)
         end
     end
+    Taxi.Debug("selected random pickup location for mission")
     return Taxi.mission.pickup.current
 end
 
 function Taxi.Services.Missions.SetRandomDropoffLocation(recursed)
+    Taxi.Debug("selecting random dropoff location for mission")
     recursed = not not recursed
     if not recursed and Taxi.mission.dropoff.current ~= nil then
         Taxi.mission.dropoff.last = Taxi.mission.dropoff.current
@@ -54,22 +58,24 @@ function Taxi.Services.Missions.SetRandomDropoffLocation(recursed)
     local vec = Config.missions.dropoff[Taxi.mission.dropoff.current]
     local pos = Taxi.Services.Missions.GetPlayerPos()
     if #(pos - vector3(vec.x, vec.y, vec.z)) <= 150 then
-        return Taxi.Services.Missions.NewPickupLocation(true)
+        return Taxi.Services.Missions.SetRandomDropoffLocation(true)
     end
     if Taxi.mission.dropoff.last ~= nil then
         if Taxi.mission.dropoff.current == Taxi.mission.dropoff.last then
-            return Taxi.Services.Missions.NewPickupLocation(true)
+            return Taxi.Services.Missions.SetRandomDropoffLocation(true)
         end
         local last = Config.missions.dropoff[Taxi.mission.dropoff.last]
         local curr = Config.missions.dropoff[Taxi.mission.dropoff.current]
         if #(vector3(last.x, last.y, last.z) - vector3(curr.x, curr.y, curr.z)) <= 50 then
-            return Taxi.Services.Missions.NewPickupLocation(true)
+            return Taxi.Services.Missions.SetRandomDropoffLocation(true)
         end
     end
+    Taxi.Debug("selected random dropoff location for mission")
     return Taxi.mission.dropoff.current
 end
 
-function Taxi.Services.Missions.LoadCurrentMissionPad()
+function Taxi.Services.Missions.LoadCurrentMissionPed()
+    Taxi.Debug("loading ped for mission")
     RequestModel(Taxi.mission.npc.current)
     while not HasModelLoaded(Taxi.mission.npc.current) do
         Wait(0)
@@ -86,7 +92,14 @@ function Taxi.Services.Missions.LoadCurrentMissionPad()
     FreezeEntityPosition(Taxi.mission.npc.ped, true)
 end
 
+function Taxi.Services.Missions.RemoveMissionsPed(ped)
+    SetTimeout(20000, function()
+        DeletePed(ped)
+    end)
+end
+
 function Taxi.Services.Missions.SetMissionBlip(vec)
+    Taxi.Debug("creating blip for mission")
     if Taxi.mission.blip ~= nil then
         RemoveBlip(Taxi.mission.blip)
     end
@@ -119,23 +132,7 @@ function Taxi.Services.Missions.Reset()
     Taxi.mission.dropoff.arrived = false
 end
 
-function Taxi.Services.Missions.StartMission()
-    if not Taxi.Methods.IsPlayerInsideTaxi() then
-        Taxi.Error(Lang:t("error.not_in_taxi"))
-    end
-    if Taxi.mission.active then
-        Taxi.Error(Lang:t("error.already_mission"))
-    end
-    Taxi.Services.Missions.SetRandomMissionPed(false)
-    Taxi.Services.Missions.LoadCurrentMissionPad()
-    Taxi.Services.Missions.SetRandomPickupLocation(false)
-    local pickup = Config.missions.pickup[Taxi.mission.pickup.current]
-    Taxi.Services.Missions.SetMissionBlip(pickup)
-    Taxi.mission.active = true
-    Taxi.Success(Lang:t("info.npc_on_gps"))
-end
-
-local function ItsJustTheTipBaby()
+function Taxi.Services.Missions.CalculateBonus()
     local found = false
     for level, info in next, Config.bonus.levels do
         exports["mz-skills"]:CheckSkill("Besturen", info.experiance, function(hasSkillLevel)
@@ -149,259 +146,121 @@ local function ItsJustTheTipBaby()
     end
 end
 
-local function GetDeliveryLocation()
-    Taxi.Services.Missions.SetRandomDropoffLocation()
-
-    local location = Config.missions.dropoff[Taxi.mission.current]
-
-    Taxi.Services.Missions.SetMissionBlip(location)
-
-    Taxi.mission.last = Taxi.mission.current
-
-    if not Config.UseTarget then -- added checks to disable distance checking if polyzone option is used
-        CreateThread(function()
-            while true do
-                local ped = PlayerPedId()
-                local pos = GetEntityCoords(ped)
-                local dist = #(pos - vector3(location.x, location.y, location.z))
-                if dist < 20 then
-                    DrawMarker(2, location.x, location.y, location.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 255, 255, 255, 255, 0, 0, 0, 1, 0, 0, 0)
-                    if dist < 5 then
-                        Taxi.Methods.DrawText3D(location.x, location.y, location.z, Lang:t("info.drop_off_npc"))
-                        if IsControlJustPressed(0, 38) then
-                            local veh = GetVehiclePedIsIn(ped, 0)
-                            TaskLeaveVehicle(Taxi.mission.npc.ped, veh, 0)
-                            SetEntityAsMissionEntity(Taxi.mission.npc.ped, false, true)
-                            SetEntityAsNoLongerNeeded(Taxi.mission.npc.ped)
-                            local targetCoords = Config.missions.pickup[Taxi.mission.npc.last]
-                            TaskGoStraightToCoord(Taxi.mission.npc.ped, targetCoords.x, targetCoords.y, targetCoords.z, 1.0, -1, 0.0, 0.0)
-                            SendNUIMessage({
-                                name = "meter:toggle-fare"
-                            })
-                            TriggerServerEvent('qb-taxi:server:NpcPay', Taxi.meter.data.currentFare)
-                            Taxi.meter.active = false
-                            Taxi.Services.Meter.Reset()
-                            Taxi.Success(Lang:t("info.person_was_dropped_off"))
-                            if Taxi.mission.blip ~= nil then
-                                RemoveBlip(Taxi.mission.blip)
-                            end
-                            Wait(200)
-                            if Config.mzskills then
-                                local BetterXP = math.random(Config.DriverXPlow, Config.DriverXPhigh)
-                                local xpmultiple = math.random(1, 4)
-                                if xpmultiple >= 3 then
-                                    chance = BetterXP
-                                elseif xpmultiple < 3 then
-                                    chance = Config.DriverXPlow
-                                end
-                                exports["mz-skills"]:UpdateSkill("Besturen", chance)
-                                Wait(1000)
-                                if Config.bonus.chance >= math.random(1, 100) then
-                                    -- Skill check call for config.menu prices on items
-                                    ItsJustTheTipBaby()
-                                end
-                            end
-                            local RemovePed = function(p)
-                                SetTimeout(60000, function()
-                                    DeletePed(p)
-                                end)
-                            end
-                            RemovePed(Taxi.mission.npc.ped)
-                            Taxi.Services.Missions.Reset()
-                            break
-                        end
-                    end
-                end
-                Wait(1)
-            end
-        end)
-    end
-end
-
-function createNpcPickUpLocation()
-    local pickup = Config.missions.pickup[Taxi.mission.npc.current]
-    Taxi.mission.pickup.zone = Taxi.Methods.CreateBoxZone(pickup)
-    Taxi.mission.pickup.zone:onPlayerInOut(function(isPlayerInside)
-        if isPlayerInside then
-            if Taxi.Methods.IsPlayerInsideTaxi() and not Taxi.mission.pickup.arrived and not Taxi.mission.pickup.done then
-                Taxi.mission.pickup.arrived = true
-                exports['qb-core']:DrawText(Lang:t("info.call_npc"), Config.DefaultTextLocation)
-                callNpcPoly()
-            end
-        else
-            Taxi.mission.pickup.arrived = false
-        end
-    end)
-end
-
-function createNpcDelieveryLocation()
-    local drop = Config.missions.dropoff[Taxi.mission.current]
-    Taxi.mission.dropoff.zone = Taxi.Methods.CreateBoxZone(drop)
-    Taxi.mission.dropoff.zone:onPlayerInOut(function(isPlayerInside)
-        if isPlayerInside then
-            if Taxi.Methods.IsPlayerInsideTaxi() and not Taxi.mission.dropoff.arrived and Taxi.mission.pickup.done then
-                Taxi.mission.dropoff.arrived = true
-                exports['qb-core']:DrawText(Lang:t("info.drop_off_npc"), Config.DefaultTextLocation)
-                dropNpcPoly()
-            end
-        else
-            Taxi.mission.dropoff.arrived = false
-        end
-    end)
-end
-
-function callNpcPoly()
-    CreateThread(function()
-        while not Taxi.mission.pickup.done do
-            local ped = PlayerPedId()
-            if Taxi.mission.pickup.arrived then
+function Taxi.Services.Missions.MissionDropoffThread()
+    local vec = Config.missions.dropoff[Taxi.mission.dropoff.current]
+    while true do
+        local pos = Taxi.Services.Missions.GetPlayerPos()
+        local dist = #(pos - vector3(vec.x, vec.y, vec.z))
+        if dist < 20 then
+            DrawMarker(2, vec.x, vec.y, vec.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, Config.colors.rgb[1], Config.colors.rgb[2], Config.colors.rgb[3], 255, 0, 0, 0, 1, 0, 0, 0)
+            if dist < 5 then
+                Taxi.Methods.DrawText3D(vec.x, vec.y, vec.z, Lang:t("info.drop_off_npc"))
                 if IsControlJustPressed(0, 38) then
-                    exports['qb-core']:KeyPressed()
-                    local veh = GetVehiclePedIsIn(ped, 0)
-                    local maxSeats, freeSeat = GetVehicleMaxNumberOfPassengers(veh)
-
-                    for i=maxSeats - 1, 0, -1 do
-                        if IsVehicleSeatFree(veh, i) then
-                            freeSeat = i
-                            break
-                        end
-                    end
-
-                    Taxi.meter.open = true
-                    Taxi.meter.active = true
-                    Taxi.meter.start = GetEntityCoords(PlayerPedId())
-                    SendNUIMessage({
-                        action = "openMeter",
-                        toggle = true,
-                        data = Config.Meter
-                    })
-                    SendNUIMessage({
-                        action = "toggleMeter"
-                    })
-                    ClearPedTasksImmediately(Taxi.mission.npc.ped)
-                    FreezeEntityPosition(Taxi.mission.npc.ped, false)
-                    TaskEnterVehicle(Taxi.mission.npc.ped, veh, -1, freeSeat, 1.0, 0)
-                    Taxi.Info(Lang:t("info.go_to_location"))
-                    if Taxi.mission.npc.blip ~= nil then
-                        RemoveBlip(Taxi.mission.npc.blip)
-                    end
-                    GetDeliveryLocation()
-                    Taxi.mission.pickup.done = true
-                    createNpcDelieveryLocation()
-                    Taxi.mission.pickup.zone:destroy()
-                end
-            end
-            Wait(1)
-        end
-    end)
-end
-
-function dropNpcPoly()
-    CreateThread(function()
-        while Taxi.mission.pickup.done do
-            local ped = PlayerPedId()
-            if Taxi.mission.dropoff.arrived then
-                if IsControlJustPressed(0, 38) then
-                    exports['qb-core']:KeyPressed()
-                    local veh = GetVehiclePedIsIn(ped, 0)
+                    local veh = GetVehiclePedIsIn(PlayerPedId(), 0)
                     TaskLeaveVehicle(Taxi.mission.npc.ped, veh, 0)
                     SetEntityAsMissionEntity(Taxi.mission.npc.ped, false, true)
                     SetEntityAsNoLongerNeeded(Taxi.mission.npc.ped)
-                    local targetCoords = Config.missions.pickup[Taxi.mission.npc.last]
+                    local targetCoords = Config.missions.pickup[Taxi.mission.pickup.current]
                     TaskGoStraightToCoord(Taxi.mission.npc.ped, targetCoords.x, targetCoords.y, targetCoords.z, 1.0, -1, 0.0, 0.0)
                     SendNUIMessage({
-                        action = "toggleMeter"
+                        name = "meter:toggle-fare"
                     })
                     TriggerServerEvent('qb-taxi:server:NpcPay', Taxi.meter.data.currentFare)
                     Taxi.meter.active = false
-                    SendNUIMessage({
-                        action = "resetMeter"
-                    })
+                    Taxi.Services.Meter.Reset()
                     Taxi.Success(Lang:t("info.person_was_dropped_off"))
                     if Taxi.mission.blip ~= nil then
                         RemoveBlip(Taxi.mission.blip)
                     end
                     Wait(200)
                     if Config.mzskills then
-                        local BetterXP = math.random(Config.DriverXPlow, Config.DriverXPhigh)
-                        local xpmultiple = math.random(1, 4)
-                        if xpmultiple >= 3 then
-                            chance = BetterXP
-                        elseif xpmultiple < 3 then
-                            chance = Config.DriverXPlow
+                        local points = math.random(Config.DriverXPlow, Config.DriverXPhigh)
+                        if math.random(1, 4) == 1 then
+                            points += math.random(10, 20)
                         end
-                        exports["mz-skills"]:UpdateSkill("Besturen", chance)
+                        exports["mz-skills"]:UpdateSkill("Besturen", points)
                         Wait(1000)
-                        if Config.bonus.chance >= math.random(1, 100) then
-                            ItsJustTheTipBaby()
+                        if math.random(1, 100) >= (100 - Config.bonus.chance) then
+                            Taxi.Services.Missions.CalculateBonus()
                         end
                     end
-                    local RemovePed = function(p)
-                        SetTimeout(60000, function()
-                            DeletePed(p)
-                        end)
-                    end
-                    RemovePed(Taxi.mission.npc.ped)
+                    Taxi.Services.Missions.RemoveMissionsPed(Taxi.mission.npc.ped)
                     Taxi.Services.Missions.Reset()
-                    Taxi.mission.dropoff.zone:destroy()
                     break
                 end
             end
-            Wait(1)
         end
-    end)
+        Wait(1)
+    end
+end
+
+function Taxi.Services.Missions.StartMissionDropoff()
+    Taxi.Services.Missions.SetRandomDropoffLocation()
+    local vec = Config.missions.dropoff[Taxi.mission.dropoff.current]
+    Taxi.Services.Missions.SetMissionBlip(vec)
+    CreateThread(Taxi.Services.Missions.MissionDropoffThread)
+end
+
+function Taxi.Services.Missions.MissionPickupThread()
+    local vec = Config.missions.pickup[Taxi.mission.pickup.current]
+    while not Taxi.mission.pickup.done do
+        local pos = Taxi.Services.Missions.GetPlayerPos()
+        local dist = #(pos - vector3(vec.x, vec.y, vec.z))
+        if dist < 40 then
+            DrawMarker(
+                2,
+                vec.x, vec.y, vec.z  + 1.5,
+                0.0, 0.0, 0.0,
+                180.0, 0.0, 0.0,
+                0.5, 0.5, 0.5,
+                Config.colors.rgb[1], Config.colors.rgb[2], Config.colors.rgb[3], 200,
+                false, false, false, true, false, false, false
+            )
+            if dist < 5 then
+                Taxi.Methods.DrawText3D(vec.x, vec.y, vec.z, Lang:t("info.call_npc"))
+                if IsControlJustPressed(0, 38) then
+                    local veh = GetVehiclePedIsIn(PlayerPedId(), 0)
+                    local maxSeats, freeSeat = GetVehicleMaxNumberOfPassengers(veh)
+                    for i = maxSeats - 1, 0, -1 do
+                        if IsVehicleSeatFree(veh, i) then
+                            freeSeat = i
+                            break
+                        end
+                    end
+                    Taxi.meter.start = GetEntityCoords(PlayerPedId())
+                    Taxi.Services.Meter.Open()
+                    Taxi.meter.active = true
+                    SendNUIMessage({ name = "meter:toggle-fare" })
+                    ClearPedTasksImmediately(Taxi.mission.npc.ped)
+                    FreezeEntityPosition(Taxi.mission.npc.ped, false)
+                    TaskEnterVehicle(Taxi.mission.npc.ped, veh, -1, freeSeat, 1.0, 0)
+                    Taxi.Info(Lang:t("info.go_to_location"))
+                    Taxi.mission.pickup.done = true
+                    Taxi.Services.Missions.StartMissionDropoff()
+                end
+            end
+        end
+        Wait(1)
+    end
+end
+
+function Taxi.Services.Missions.StartMissionPickup()
+    if not Taxi.Methods.IsPlayerInsideTaxi() then
+        Taxi.Error(Lang:t("error.not_in_taxi"))
+    end
+    if Taxi.mission.active then
+        Taxi.Error(Lang:t("error.already_mission"))
+    end
+    Taxi.Debug("starting mission")
+    Taxi.Services.Missions.SetRandomMissionPed(false)
+    Taxi.Services.Missions.SetRandomPickupLocation(false)
+    Taxi.Services.Missions.LoadCurrentMissionPed()
+    local pickup = Config.missions.pickup[Taxi.mission.pickup.current]
+    Taxi.Services.Missions.SetMissionBlip(pickup)
+    Taxi.mission.active = true
+    Taxi.Success(Lang:t("info.npc_on_gps"))
+    CreateThread(Taxi.Services.Missions.MissionPickupThread)
 end
 
 -- Events
-RegisterNetEvent('qb-taxi:client:DoTaxiNpc', function()
-    Taxi.Services.Missions.StartMission()
-
-    local location = Config.missions.pickup[Taxi.mission.npc.current]
-
-    CreateThread(function()
-        while not Taxi.mission.pickup.done do
-            local pos = Taxi.Services.Missions.GetPlayerPos()
-            local dist = #(pos - vector3(location.x, location.y, location.z))
-            local z = ((location.z * 1000) + 500) / 1000
-            if dist < 20 then
-                DrawMarker(
-                    2,
-                    location.x, location.y, z,
-                    0.0, 0.0, 0.0,
-                    0.0, 0.0, 0.0,
-                    0.3, 0.3, 0.3,
-                    Config.colors.rgb[1], Config.colors.rgb[2], Config.colors.rgb[3], 200,
-                    false, false, false, true, false, false, false
-                )
-                if dist < 5 then
-                    Taxi.Methods.DrawText3D(location.x, location.y, z, Lang:t("info.call_npc"))
-                    if IsControlJustPressed(0, 38) then
-                        local veh = GetVehiclePedIsIn(ped, 0)
-                        local maxSeats, freeSeat = GetVehicleMaxNumberOfPassengers(veh)
-
-                        for i=maxSeats - 1, 0, -1 do
-                            if IsVehicleSeatFree(veh, i) then
-                                freeSeat = i
-                                break
-                            end
-                        end
-                        Taxi.meter.start = GetEntityCoords(PlayerPedId())
-                        Taxi.Services.Meter.Open()
-                        Taxi.meter.active = true
-                        SendNUIMessage({ name = "meter:toggle-fare" })
-                        ClearPedTasksImmediately(Taxi.mission.npc.ped)
-                        FreezeEntityPosition(Taxi.mission.npc.ped, false)
-                        TaskEnterVehicle(Taxi.mission.npc.ped, veh, -1, freeSeat, 1.0, 0)
-                        Taxi.Info(Lang:t("info.go_to_location"))
-                        if Taxi.mission.npc.blip ~= nil then
-                            RemoveBlip(Taxi.mission.npc.blip)
-                        end
-                        GetDeliveryLocation()
-                        Taxi.mission.pickup.done = true
-                    end
-                end
-            end
-            Wait(1)
-        end
-    end)
-end)
+RegisterNetEvent('qb-taxi:client:DoTaxiNpc', Taxi.Services.Missions.StartMissionPickup)

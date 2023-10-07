@@ -2,7 +2,7 @@ Taxi.Services.Meter = {}
 
 -- methods
 function Taxi.Services.Meter.Reset()
-    Taxi.meter.data.fareAmount = 6
+    Taxi.meter.data.fareAmount = Config.meter.defaultPrice / 10
     Taxi.meter.data.currentFare = 0
     Taxi.meter.data.distanceTraveled = 0
     Taxi.meter.data.defaultPrice = Config.meter.defaultPrice
@@ -43,12 +43,10 @@ function Taxi.Services.Meter.Toggle()
     end
 end
 
-function Taxi.Services.Meter.Enable()
+function Taxi.Services.Meter.ToggleFare()
     if Taxi.meter.open then
-        SendNUIMessage({
-            action = "toggleMeter",
-            data = Taxi.meter.data
-        })
+        Taxi.meter.active = not Taxi.meter.active
+        Taxi.Methods.TriggerNuiEvent("meter:toggle-fare", Taxi.meter.data)
     else
         Taxi.Error(Lang:t("error.missing_meter"))
     end
@@ -70,7 +68,19 @@ function Taxi.Services.Meter.CalculateFareAmount()
             local distance = #(Taxi.meter.start - pos)
             Taxi.meter.start = pos
             Taxi.meter.data.distanceTraveled += distance
-            local fareAmount = (Taxi.meter.data.distanceTraveled / 100.00) * Taxi.meter.data.fareAmount
+            local fareAmount = ((Taxi.meter.data.distanceTraveled / 90) * (Taxi.meter.data.fareAmount * 100)) / 100
+            Taxi.meter.data.currentFare = math.ceil(fareAmount)
+            Taxi.Services.Meter.Update()
+        end
+    end
+end
+
+function Taxi.Services.Meter.CalculateFareAmountForMission()
+    if Taxi.meter.open and Taxi.meter.active then
+        local pos = GetEntityCoords(PlayerPedId())
+        if Taxi.meter.start ~= pos then
+            Taxi.meter.data.distanceTraveled = #(Taxi.meter.start - pos)
+            local fareAmount = ((Taxi.meter.data.distanceTraveled / 100) * (Taxi.meter.data.fareAmount * 100)) / 100
             Taxi.meter.data.currentFare = math.ceil(fareAmount)
             Taxi.Services.Meter.Update()
         end
@@ -79,7 +89,7 @@ end
 
 -- events
 RegisterNetEvent('qb-taxi:client:toggleMeter', Taxi.Services.Meter.Toggle)
-RegisterNetEvent('qb-taxi:client:enableMeter', Taxi.Services.Meter.Enable)
+RegisterNetEvent('qb-taxi:client:enableMeter', Taxi.Services.Meter.ToggleFare)
 RegisterNetEvent('qb-taxi:client:toggleMuis', Taxi.Services.Meter.EnableMouse)
 
 -- nui callbacks

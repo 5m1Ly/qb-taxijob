@@ -14,7 +14,9 @@ end)
 CreateThread(function()
     while true do
         Wait(2000)
-        Taxi.Services.Meter.CalculateFareAmount()
+        if Taxi.mission.active then
+            Taxi.Services.Meter.CalculateFareAmount()
+        end
     end
 end)
 

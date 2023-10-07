@@ -1,5 +1,5 @@
 Config.bonus = {
-    chance = 20,                    -- Percentage chance that the client pays the driver a bonus (to disable set to 0).
+    chance = 50,                    -- Percentage chance that the client pays the driver a bonus (to disable set to 0).
     levels = {
         { low = 1, high = 5, experiance = 0 },
         { low = 3, high = 8, experiance = 200 },
