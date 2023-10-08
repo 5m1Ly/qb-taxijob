@@ -1,4 +1,6 @@
 Config.missions = {
+    minDistanceBetweenPlayerAndPickupOrDropoff = 100, -- in units
+    minDistanceBetweenLastAndCurrentPickupOrDropoff = 500, -- in units
     pickup = {
         vector4(392.1, 314.18, 103.1, 169.93),      -- 24/7 near the big bank
         vector4(297.48, 178.09, 104.18, 166.88),    -- between the big bank and the tattoos store
@@ -14,11 +16,26 @@ Config.missions = {
         vector4(762.85, -901.21, 25.18, 281.98),    -- anwb
         vector4(762.65, -890.85, 25.12, 271.26),    -- anwb
         vector4(789.13, -881.33, 25.08, 86.55),     -- anwb
+        vector4(796.7, -949.12, 25.76, 93.95),      -- anwb
+        vector4(765.57, -926.62, 25.45, 277.53),    -- anwb
+        vector4(762.85, -901.21, 25.18, 281.98),    -- anwb
+        vector4(762.65, -890.85, 25.12, 271.26),    -- anwb
+        vector4(789.13, -881.33, 25.08, 86.55),     -- anwb
         vector4(391.46, -1017.04, 29.42, 273.51),   -- mission row police station
         vector4(391.89, -995.58, 29.42, 270.56),    -- mission row police station
         vector4(392.59, -979.88, 29.42, 271.3),     -- mission row police station
         vector4(421.85, -962.2, 29.38, 8.25),       -- mission row police station
         vector4(433.98, -961.89, 29.19, 9.63),      -- mission row police station
+        vector4(391.46, -1017.04, 29.42, 273.51),   -- mission row police station
+        vector4(391.89, -995.58, 29.42, 270.56),    -- mission row police station
+        vector4(392.59, -979.88, 29.42, 271.3),     -- mission row police station
+        vector4(421.85, -962.2, 29.38, 8.25),       -- mission row police station
+        vector4(433.98, -961.89, 29.19, 9.63),      -- mission row police station
+        vector4(167.06, -1037.07, 29.32, 344.81),   -- legion square bank
+        vector4(175.92, -1039.93, 29.31, 350.47),   -- legion square bank
+        vector4(136.19, -1026.67, 29.35, 347.08),   -- legion square bank
+        vector4(147.6, -998.63, 29.36, 174.6),      -- legion square bank
+        vector4(159.64, -1008.09, 29.53, 163.92),   -- legion square bank
         vector4(167.06, -1037.07, 29.32, 344.81),   -- legion square bank
         vector4(175.92, -1039.93, 29.31, 350.47),   -- legion square bank
         vector4(136.19, -1026.67, 29.35, 347.08),   -- legion square bank
@@ -30,11 +47,28 @@ Config.missions = {
         vector4(243.2, -863.57, 29.66, 341.85),     -- legion square garage
         vector4(264.52, -835.72, 29.41, 169.93),    -- legion square garage
         vector4(236.44, -825.41, 30.12, 163.62),    -- legion square garage
+        vector4(200.08, -848.1, 30.75, 341.28),     -- legion square garage
+        vector4(209.83, -851.43, 30.5, 344.34),     -- legion square garage
+        vector4(226.5, -857.63, 30.08, 348.99),     -- legion square garage
+        vector4(243.2, -863.57, 29.66, 341.85),     -- legion square garage
+        vector4(264.52, -835.72, 29.41, 169.93),    -- legion square garage
+        vector4(236.44, -825.41, 30.12, 163.62),    -- legion square garage
         vector4(278.25, -611.14, 43.18, 18.48),     -- pillbox hospital
         vector4(274.42, -596.55, 43.17, 59.84),     -- pillbox hospital
         vector4(279.34, -585.02, 43.3, 65.9),       -- pillbox hospital
         vector4(252.11, -563.35, 43.27, 253.0),     -- pillbox hospital
         vector4(245.23, -581.26, 43.24, 250.17),    -- pillbox hospital
+        vector4(278.25, -611.14, 43.18, 18.48),     -- pillbox hospital
+        vector4(274.42, -596.55, 43.17, 59.84),     -- pillbox hospital
+        vector4(279.34, -585.02, 43.3, 65.9),       -- pillbox hospital
+        vector4(252.11, -563.35, 43.27, 253.0),     -- pillbox hospital
+        vector4(245.23, -581.26, 43.24, 250.17),    -- pillbox hospital
+        vector4(-1199.25, -878.27, 13.41, 25.55),   -- burgershot
+        vector4(-1191.62, -873.27, 13.69, 40.98),   -- burgershot
+        vector4(-1211.12, -885.9, 12.95, 35.91),    -- burgershot
+        vector4(-1202.08, -847.01, 14.06, 217.85),  -- burgershot
+        vector4(-1216.24, -856.68, 13.51, 216.28),  -- burgershot
+        vector4(-1225.88, -863.53, 13.12, 221.99),  -- burgershot
         vector4(-1199.25, -878.27, 13.41, 25.55),   -- burgershot
         vector4(-1191.62, -873.27, 13.69, 40.98),   -- burgershot
         vector4(-1211.12, -885.9, 12.95, 35.91),    -- burgershot
@@ -131,6 +165,16 @@ Config.missions = {
         vector4(770.65, -946.63, 25.32, 187.15),    -- anwb
         vector4(786.76, -895.87, 24.6, 3.64),       -- anwb
         vector4(786.05, -883.6, 24.58, 3.19),       -- anwb
+        vector4(795.09, -963.09, 25.55, 3.9),       -- anwb
+        vector4(793.61, -947.35, 25.27, 7.86),      -- anwb
+        vector4(770.65, -946.63, 25.32, 187.15),    -- anwb
+        vector4(786.76, -895.87, 24.6, 3.64),       -- anwb
+        vector4(786.05, -883.6, 24.58, 3.19),       -- anwb
+        vector4(403.79, -1015.75, 28.9, 358.86),    -- mission row police station
+        vector4(419.1, -959.56, 28.89, 271.62),     -- mission row police station
+        vector4(468.49, -959.7, 27.41, 270.8),      -- mission row police station
+        vector4(394.76, -981.23, 28.91, 178.44),    -- mission row police station
+        vector4(394.29, -1011.82, 28.91, 180.9),    -- mission row police station
         vector4(403.79, -1015.75, 28.9, 358.86),    -- mission row police station
         vector4(419.1, -959.56, 28.89, 271.62),     -- mission row police station
         vector4(468.49, -959.7, 27.41, 270.8),      -- mission row police station
@@ -141,6 +185,18 @@ Config.missions = {
         vector4(142.04, -998.82, 28.84, 71.23),     -- legion square bank
         vector4(149.44, -1028.69, 28.83, 250.97),   -- legion square bank
         vector4(178.76, -1038.5, 28.8, 249.93),     -- legion square bank
+        vector4(201.67, -1024.79, 28.97, 71.11),    -- legion square bank
+        vector4(158.96, -1010.67, 29.0, 71.67),     -- legion square bank
+        vector4(142.04, -998.82, 28.84, 71.23),     -- legion square bank
+        vector4(149.44, -1028.69, 28.83, 250.97),   -- legion square bank
+        vector4(178.76, -1038.5, 28.8, 249.93),     -- legion square bank
+        vector4(260.47, -836.29, 28.98, 71.41),     -- legion square garage
+        vector4(240.74, -829.07, 29.47, 69.72),     -- legion square garage
+        vector4(215.22, -819.96, 30.12, 70.79),     -- legion square garage
+        vector4(201.6, -845.38, 30.19, 251.54),     -- legion square garage
+        vector4(209.92, -848.37, 29.98, 250.87),    -- legion square garage
+        vector4(226.87, -854.78, 29.56, 250.98),    -- legion square garage
+        vector4(243.64, -860.9, 29.13, 249.48),     -- legion square garage
         vector4(260.47, -836.29, 28.98, 71.41),     -- legion square garage
         vector4(240.74, -829.07, 29.47, 69.72),     -- legion square garage
         vector4(215.22, -819.96, 30.12, 70.79),     -- legion square garage
@@ -154,6 +210,24 @@ Config.missions = {
         vector4(277.5, -608.89, 42.61, 280.04),     -- pillbox hospital
         vector4(292.07, -595.33, 42.71, 341.69),    -- pillbox hospital
         vector4(296.56, -574.1, 42.75, 28.23),      -- pillbox hospital
+        vector4(260.5, -621.29, 41.41, 335.98),     -- pillbox hospital
+        vector4(271.84, -596.38, 42.65, 335.53),    -- pillbox hospital
+        vector4(276.99, -584.45, 42.73, 338.79),    -- pillbox hospital
+        vector4(277.5, -608.89, 42.61, 280.04),     -- pillbox hospital
+        vector4(292.07, -595.33, 42.71, 341.69),    -- pillbox hospital
+        vector4(296.56, -574.1, 42.75, 28.23),      -- pillbox hospital
+        vector4(-1209.0, -882.33, 12.56, 303.3),    -- burgershot
+        vector4(-1209.0, -882.33, 12.56, 303.3),    -- burgershot
+        vector4(-1203.37, -878.66, 12.78, 303.2),   -- burgershot
+        vector4(-1203.37, -878.66, 12.78, 303.2),   -- burgershot
+        vector4(-1197.87, -875.07, 12.98, 303.05),  -- burgershot
+        vector4(-1197.87, -875.07, 12.98, 303.05),  -- burgershot
+        vector4(-1182.66, -878.33, 13.46, 211.5),   -- burgershot
+        vector4(-1182.66, -878.33, 13.46, 211.5),   -- burgershot
+        vector4(-1178.57, -884.92, 13.46, 212.13),  -- burgershot
+        vector4(-1178.57, -884.92, 13.46, 212.13),  -- burgershot
+        vector4(-1174.85, -890.87, 13.46, 211.91),  -- burgershot
+        vector4(-1174.85, -890.87, 13.46, 211.91),  -- burgershot
         vector4(424.45, -819.79, 28.53, 91.0),      -- legion square clothing store
         vector4(401.62, -793.62, 28.78, 181.62),    -- legion square clothing store
         vector4(401.64, -824.98, 28.79, 179.99),    -- legion square digital den
@@ -190,12 +264,6 @@ Config.missions = {
         vector4(-547.04, -1064.16, 21.95, 181.77),  -- catcafe
         vector4(-607.31, -952.62, 21.47, 87.87),    -- weazel news
         vector4(-627.98, -923.66, 22.88, 0.79),     -- weazel news
-        vector4(-1209.0, -882.33, 12.56, 303.3),    -- burgershot
-        vector4(-1203.37, -878.66, 12.78, 303.2),   -- burgershot
-        vector4(-1197.87, -875.07, 12.98, 303.05),  -- burgershot
-        vector4(-1182.66, -878.33, 13.46, 211.5),   -- burgershot
-        vector4(-1178.57, -884.92, 13.46, 212.13),  -- burgershot
-        vector4(-1174.85, -890.87, 13.46, 211.91),  -- burgershot
         vector4(-1511.11, -440.19, 35.05, 300.88),  -- coffee shop
         vector4(-1510.29, -422.44, 35.05, 49.64),   -- coffee shop
         vector4(-1534.51, -442.89, 35.05, 228.95),  -- coffee shop

@@ -22,56 +22,40 @@ function Taxi.Services.Missions.SetRandomMissionPed(recursed)
     return Taxi.mission.npc.current
 end
 
-function Taxi.Services.Missions.SetRandomPickupLocation(recursed)
-    Taxi.Debug("selecting random pickup location for mission")
-    recursed = not not recursed
-    if not recursed and Taxi.mission.pickup.current ~= nil then
-        Taxi.mission.pickup.last = Taxi.mission.pickup.current
+function Taxi.Services.Missions.SetRandomLocation(location_type, recursed)
+    Taxi.Debug(("selecting random %s location for mission"):format(location_type))
+    if not recursed and Taxi.mission[location_type].current ~= nil then
+        Taxi.mission[location_type].last = Taxi.mission[location_type].current
     end
-    Taxi.mission.pickup.current = math.random(1, #Config.missions.pickup)
-    local vec = Config.missions.pickup[Taxi.mission.pickup.current]
+    local config = Config.missions[location_type]
+    Taxi.mission[location_type].current = math.random(1, #config)
+    local vec = config[Taxi.mission[location_type].current]
     local pos = Taxi.Services.Missions.GetPlayerPos()
-    if #(pos - vector3(vec.x, vec.y, vec.z)) <= 150 then
-        return Taxi.Services.Missions.SetRandomPickupLocation(true)
+    local minDist1 = Config.missions.minDistanceBetweenPlayerAndPickupOrDropoff
+    if #(pos - vector3(vec.x, vec.y, vec.z)) <= minDist1 then
+        return Taxi.Services.Missions.SetRandomLocation(location_type, true)
     end
-    if Taxi.mission.pickup.last ~= nil then
-        if Taxi.mission.pickup.current == Taxi.mission.pickup.last then
-            return Taxi.Services.Missions.SetRandomPickupLocation(true)
+    if Taxi.mission[location_type].last ~= nil then
+        if Taxi.mission[location_type].current == Taxi.mission[location_type].last then
+            return Taxi.Services.Missions.SetRandomLocation(location_type, true)
         end
-        local last = Config.missions.pickup[Taxi.mission.pickup.last]
-        local curr = Config.missions.pickup[Taxi.mission.pickup.current]
-        if #(vector3(last.x, last.y, last.z) - vector3(curr.x, curr.y, curr.z)) <= 50 then
-            return Taxi.Services.Missions.SetRandomPickupLocation(true)
+        local last = config[Taxi.mission[location_type].last]
+        local curr = config[Taxi.mission[location_type].current]
+        local minDist2 = Config.missions.minDistanceBetweenLastAndCurrentPickupOrDropoff
+        if #(vector3(last.x, last.y, last.z) - vector3(curr.x, curr.y, curr.z)) <= minDist2 then
+            return Taxi.Services.Missions.SetRandomLocation(location_type, true)
         end
     end
-    Taxi.Debug("selected random pickup location for mission")
-    return Taxi.mission.pickup.current
+    Taxi.Debug(("selected random %s location for mission"):format(location_type))
+    return Taxi.mission[location_type].current
 end
 
-function Taxi.Services.Missions.SetRandomDropoffLocation(recursed)
-    Taxi.Debug("selecting random dropoff location for mission")
-    recursed = not not recursed
-    if not recursed and Taxi.mission.dropoff.current ~= nil then
-        Taxi.mission.dropoff.last = Taxi.mission.dropoff.current
-    end
-    Taxi.mission.dropoff.current = math.random(1, #Config.missions.dropoff)
-    local vec = Config.missions.dropoff[Taxi.mission.dropoff.current]
-    local pos = Taxi.Services.Missions.GetPlayerPos()
-    if #(pos - vector3(vec.x, vec.y, vec.z)) <= 150 then
-        return Taxi.Services.Missions.SetRandomDropoffLocation(true)
-    end
-    if Taxi.mission.dropoff.last ~= nil then
-        if Taxi.mission.dropoff.current == Taxi.mission.dropoff.last then
-            return Taxi.Services.Missions.SetRandomDropoffLocation(true)
-        end
-        local last = Config.missions.dropoff[Taxi.mission.dropoff.last]
-        local curr = Config.missions.dropoff[Taxi.mission.dropoff.current]
-        if #(vector3(last.x, last.y, last.z) - vector3(curr.x, curr.y, curr.z)) <= 50 then
-            return Taxi.Services.Missions.SetRandomDropoffLocation(true)
-        end
-    end
-    Taxi.Debug("selected random dropoff location for mission")
-    return Taxi.mission.dropoff.current
+function Taxi.Services.Missions.SetRandomPickupLocation()
+    return Taxi.Services.Missions.SetRandomLocation('pickup', false)
+end
+
+function Taxi.Services.Missions.SetRandomDropoffLocation()
+    return Taxi.Services.Missions.SetRandomLocation('dropoff', false)
 end
 
 function Taxi.Services.Missions.LoadCurrentMissionPed()
@@ -253,7 +237,7 @@ function Taxi.Services.Missions.StartMissionPickup()
     end
     Taxi.Debug("starting mission")
     Taxi.Services.Missions.SetRandomMissionPed(false)
-    Taxi.Services.Missions.SetRandomPickupLocation(false)
+    Taxi.Services.Missions.SetRandomPickupLocation()
     Taxi.Services.Missions.LoadCurrentMissionPed()
     local pickup = Config.missions.pickup[Taxi.mission.pickup.current]
     Taxi.Services.Missions.SetMissionBlip(pickup)
